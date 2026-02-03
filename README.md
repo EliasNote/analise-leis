@@ -1,116 +1,122 @@
-﻿# Juridico AI — Análise de Leis para ME/EPP
+﻿# ⚖️ Juridico AI — Análise de Leis para ME/EPP
 
-Aplicação de consultoria jurídica assistida por IA, focada em **Direito Empresarial para Micro e Pequenas Empresas (ME/EPP)**. O sistema combina **RAG (Retrieval Augmented Generation)** com **agentes especializados** (tributário, trabalhista, societário) e uma interface **Streamlit** para chat e ingestão de leis em base vetorial **Qdrant**.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.12+-blue.svg" alt="Python Version">
+  <img src="https://img.shields.io/badge/Framework-Streamlit-FF4B4B.svg" alt="Streamlit">
+  <img src="https://img.shields.io/badge/AI-Bedrock-orange.svg" alt="AWS Bedrock">
+  <img src="https://img.shields.io/badge/Database-Qdrant-red.svg" alt="Qdrant">
+</p>
 
-## Visão geral
+Aplicação de consultoria jurídica assistida por IA, focada em **Direito Empresarial para Micro e Pequenas Empresas (ME/EPP)**. O sistema combina **RAG (Retrieval Augmented Generation)** com **agentes especializados** e uma interface intuitiva para chat e ingestão de leis.
 
-- **Chat jurídico** com classificação automática da intenção.
-- **Agentes especialistas** com prompts orientados à legislação aplicável.
-- **RAG com Qdrant** para responder com base em textos legais indexados.
-- **Ingestão de leis via URL** (Planato/HTML) com divisão por artigos.
-- **Autenticação simples** via usuário/senha configuráveis por variável de ambiente.
+---
 
-## Arquitetura (alto nível)
+## 🚀 Visão Geral
 
-1. **UI (Streamlit)**: autenticação, chat e gestão de leis.
-2. **Router**: classifica a pergunta do usuário em `tributario`, `trabalhista`, `societario`, `conversational` ou `out_of_scope`.
-3. **Agentes especializados (PydanticAI)**: cada domínio possui prompt e ferramentas próprias.
-4. **RAG (LlamaIndex + Qdrant)**: busca trechos relevantes na base vetorial.
-5. **Modelos (Bedrock)**: LLM para geração e modelo de embeddings.
+- 💬 **Chat Jurídico**: Interface conversacional com classificação automática de intenções.
+- 🤖 **Agentes Especialistas**: Agentes de domínio (Tributário, Trabalhista, Societário) com regras de resposta personalizadas.
+- 📚 **RAG com Qdrant**: Respostas fundamentadas em legislação atualizada e indexada.
+- 📥 **Ingestão Dinâmica**: Indexação de leis diretamente via URLs do Planalto/HTML.
+- 🔒 **Segurança**: Autenticação robusta via variáveis de ambiente.
 
-## Componentes principais
+## 🏗️ Arquitetura
 
-- **app.py**: interface Streamlit, login, chat e ingestão.
-- **main.py**: orquestração do fluxo com LangGraph.
-- **Agents.py**: agentes PydanticAI e ferramentas de busca.
-- **Prompts.py**: templates de prompts e regras de resposta.
-- **ingestion.py**: ingestão e indexação de leis no Qdrant.
-- **utils.py**: extração de HTML e fatiamento por artigos.
-- **LLM.py**: configuração dos modelos Bedrock.
+O sistema é dividido em componentes modulares para facilitar a manutenção e escalabilidade:
 
-## Fluxo de resposta (chat)
+1.  **Frontend (Streamlit)**: Interface de usuário para interação, login e gestão documental.
+2.  **Orquestrador (LangGraph)**: Gerencia o fluxo da conversa e roteamento de intenções.
+3.  **Agentes (PydanticAI)**: Agentes especializados com prompts direcionados à legislação ME/EPP.
+4.  **Base de Conhecimento (Qdrant)**: Database vetorial para busca semântica eficiente.
+5.  **Modelos (AWS Bedrock)**: Utiliza Anthropic Claude e modelos de embeddings de alta performance.
 
-1. Usuário envia uma pergunta no chat.
-2. O **router** classifica o tema.
-3. O agente especializado executa **busca RAG** no Qdrant.
-4. O agente gera a resposta com referências legais.
+## 🛠️ Tecnologias Utilizadas
 
-## Fluxo de ingestão de leis
+- **Linguagem**: [Python 3.12+](https://www.python.org/)
+- **Interface**: [Streamlit](https://streamlit.io/)
+- **Orquestração**: [LangGraph](https://www.langchain.com/langgraph) & [PydanticAI](https://ai.pydantic.dev/)
+- **Framework RAG**: [LlamaIndex](https://www.llamaindex.ai/)
+- **Banco Vetorial**: [Qdrant](https://qdrant.tech/)
+- **Modelos de IA**: [AWS Bedrock](https://aws.amazon.com/bedrock/) (Claude e Embeddings)
 
-1. Usuário informa URLs de leis (uma por linha).
-2. O sistema baixa o HTML, limpa ruídos e identifica artigos.
-3. Os artigos são **fatiados** e **indexados** em lotes no Qdrant.
-4. A tela exibe progresso e logs detalhados.
+---
 
-## Stack e dependências
+## 📂 Estrutura do Projeto
 
-- **Python**: recomendado **3.12+**.
-- **Streamlit** (UI)
-- **LangGraph + PydanticAI** (agentes)
-- **LlamaIndex** (RAG)
-- **Qdrant** (vetores)
-- **AWS Bedrock** (LLM/Embeddings)
+```bash
+.
+├── app.py          # Interface Streamlit e UI
+├── main.py         # Grafo de orquestração e lógica de roteamento
+├── Agents.py       # Definição dos agentes e suas ferramentas
+├── Prompts.py      # Templates de prompts e regras jurídicas
+├── ingestion.py    # Pipeline de processamento e indexação de leis
+├── utils.py        # Utilitários de parsing de HTML e fatiamento
+├── LLM.py          # Configurações de acesso ao AWS Bedrock
+└── requirements.txt # Dependências do projeto
+```
 
-## Variáveis de ambiente
+---
 
-Crie um arquivo .env com as chaves da AWS e parâmetros da aplicação.
+## ⚙️ Configuração e Execução
 
-Obrigatórias:
+### 1. Pré-requisitos
 
-- `QDRANT_URL`: URL do Qdrant (ex.: http://localhost:6333)
+- Python 3.12 ou superior
+- Docker (opcional, para execução via container)
+- Acesso ao AWS Bedrock (configurado via CLI ou variáveis)
 
-Recomendadas (login):
+### 2. Variáveis de Ambiente
 
-- `APP_USER`
-- `APP_PASSWORD`
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
-AWS Bedrock (necessário para produção):
+```env
+# Qdrant
+QDRANT_URL=http://localhost:6333
 
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `AWS_DEFAULT_REGION`
+# Autenticação App
+APP_USER=seu_usuario
+APP_PASSWORD=sua_senha
 
-## Como executar (local)
+# AWS Bedrock
+AWS_ACCESS_KEY_ID=sua_key
+AWS_SECRET_ACCESS_KEY=seu_secret
+AWS_DEFAULT_REGION=us-east-1
+```
 
-1. Configure o .env.
-2. Instale dependências.
-3. Inicie o Streamlit.
+### 3. Execução Local
 
-Observação: o projeto usa `uv` no Docker, mas pode ser executado localmente com seu gerenciador padrão.
+```bash
+# Instalar dependências
+pip install -r requirements.txt
 
-## Como executar (Docker)
+# Iniciar aplicação
+streamlit run app.py
+```
 
-O docker-compose já sobe a aplicação e o Qdrant:
+### 4. Execução via Docker (Recomendado)
 
-- **Qdrant**: porta 6333
-- **Streamlit**: porta 8501
+```bash
+docker-compose up --build
+```
 
-O serviço `app` lê o .env local para credenciais da AWS.
+Acesse a aplicação em [http://localhost:8501](http://localhost:8501).
 
-## Uso da aplicação
+---
 
-- **Login**: usa `APP_USER` e `APP_PASSWORD`.
-- **Chat**: faça perguntas sobre tributário, trabalhista ou societário.
-- **Gestão de Leis**: adicione URLs de leis e veja as fontes indexadas.
+## 💡 Fluxos de Trabalho
 
-## Estrutura do projeto
+### Fluxo de Chat
 
-- app.py — UI e fluxo principal
-- main.py — grafo de orquestração
-- Agents.py — agentes e ferramentas
-- Prompts.py — prompts e regras
-- ingestion.py — pipeline de ingestão
-- utils.py — parsing e fatiamento
-- LLM.py — configuração dos modelos
+1. O usuário submete uma dúvida jurídica.
+2. O **Router** analisa a pergunta e a encaminha ao agente especialista correspondente.
+3. O agente realiza uma busca **RAG** no Qdrant para encontrar trechos da lei pertinentes.
+4. Uma resposta fundamentada é gerada e apresentada ao usuário.
 
-## Observações importantes
+### Fluxo de Ingestão de Leis
 
-- A base vetorial é persistida em `qdrant_data/`.
-- O projeto pressupõe acesso ao **AWS Bedrock**.
-- A coleção utilizada no Qdrant é `leis_v3`.
+1. O usuário fornece URLs de leis (ex: Planalto).
+2. O sistema extrai o conteúdo em HTML e faz o fatiamento por artigos (`utils.py`).
+3. Os textos são convertidos em vetores e armazenados na coleção do Qdrant.
 
-## Troubleshooting
+---
 
-- **Erro ao carregar IA**: verifique `QDRANT_URL` e credenciais AWS.
-- **Sem resultados no chat**: confirme se há leis indexadas na coleção.
-- **Timeouts de ingestão**: reduza o número de URLs por vez.
+<p align="center">Desenvolvido para facilitar o acesso à informação jurídica em ME/EPP.</p>
