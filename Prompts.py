@@ -290,3 +290,16 @@ Siga rigorosamente este padrão de substituição:
 </History>
 """
 )
+
+juiz_tmpl =  PromptTemplate(
+     input_variables=["pergunta", "contexto", "resposta_candidata"],
+     template="""
+Você é um auditor jurídico sênior.
+Pergunta do Usuário: {pergunta}
+Documentos Originais: {contexto}
+Resposta Gerada: {resposta_candidata}
+
+Avalie a resposta quanto à fidelidade aos documentos e precisão nos cálculos.
+Se houver erro de cálculo ou alucinação jurídica, dê nota baixa.
+"""
+)
